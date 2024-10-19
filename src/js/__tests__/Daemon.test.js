@@ -1,4 +1,6 @@
 import Daemon from "../characters/Daemon";
+import PositionedCharacter from "../PositionedCharacter";
+import {calculateDistance} from "../utils";
 
 describe('Должен создаваться персонаж Daemon с правильными параметрами', () => {
     it('attack/defence: 10/10', () => {
@@ -9,27 +11,33 @@ describe('Должен создаваться персонаж Daemon с пра�
             health: 50,
             attack: 10,
             defence: 10,
+            move: 1,
+            attackDistance: 4,
         });
     });
 });
 
-// describe('Тестируем функции урона и повышения уровня', () => {
-//     it('урон здоровью зависит от защиты', () => {
-//         const daemon = new Daemon('Люцифер');
-//         daemon.damage(50);
-//         expect(daemon.health).toBe(70);
-//     });
-//
-//     it('при повышении уровня атака и защита увеличивается на 20%, а здоровье восстанавливается', () => {
-//         const daemon = new Daemon('Люцифер');
-//         daemon.levelUp();
-//         daemon.damage(40);
-//         daemon.levelUp();
-//         daemon.health = 25;
-//         daemon.levelUp();
-//         expect(daemon.level).toBe(4);
-//         expect(daemon.health).toBe(100);
-//         expect(daemon.attack).toBeCloseTo(17.28);
-//         expect(daemon.defence).toBeCloseTo(69.12);
-//     });
-// });
+describe('Проверяем возможности хода и атаки персонажа Daemon', () => {
+  const daemon = new Daemon(1);
+  const positionedDaemon = new PositionedCharacter(daemon, 0);
+
+  it('Daemon может передвинуться на 1 клетку', () => {
+    const result = daemon.move >= calculateDistance(positionedDaemon.position, 9);
+    expect(result).toBeTruthy();
+  });
+
+  it('Daemon НЕ может передвинуться на 2 клетки', () => {
+    const result = daemon.move >= calculateDistance(positionedDaemon.position, 16);
+    expect(result).toBeFalsy();
+  });
+
+  it('Daemon может атаковать на 4 клетки', () => {
+    const result = daemon.attackDistance >= calculateDistance(positionedDaemon.position, 36);
+    expect(result).toBeTruthy();
+  });
+
+  it('Daemon НЕ может атаковать на 5 клеток', () => {
+    const result = daemon.attackDistance >= calculateDistance(positionedDaemon.position, 37);
+    expect(result).toBeFalsy();
+  });
+});

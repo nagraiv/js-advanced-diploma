@@ -1,8 +1,9 @@
 import { calcHealthLevel, calcTileType } from './utils';
 
 export default class GamePlay {
+  static boardSize = 8;
   constructor() {
-    this.boardSize = 8;
+    // this.boardSize = 8;
     this.container = null;
     this.boardEl = null;
     this.cells = [];
@@ -51,7 +52,7 @@ export default class GamePlay {
     this.boardEl = this.container.querySelector('[data-id=board]');
 
     this.boardEl.classList.add(theme);
-    for (let i = 0; i < this.boardSize ** 2; i += 1) {
+    for (let i = 0; i < GamePlay.boardSize ** 2; i += 1) {
       const cellEl = document.createElement('div');
       cellEl.classList.add('cell', 'map-tile', `map-tile-${calcTileType(i, this.boardSize)}`);
       cellEl.addEventListener('mouseenter', event => this.onCellEnter(event));
@@ -194,6 +195,20 @@ export default class GamePlay {
     const cell = this.cells[index];
     cell.classList.remove(...Array.from(cell.classList)
       .filter(o => o.startsWith('selected')));
+  }
+
+  deselectAllCells() {
+    for (let i = 0; i < GamePlay.boardSize**2; i += 1) {
+      this.deselectCell(i);
+    }
+  }
+
+  selectOpponentCell(index) {
+    this.cells[index].classList.add('active-opponent');
+  }
+
+  deselectOpponentCell(index) {
+    this.cells[index].classList.remove('active-opponent');
   }
 
   showCellTooltip(message, index) {

@@ -10,7 +10,7 @@ const themes = {
       case 2: return this.desert;
       case 3: return this.arctic;
       case 0: return this.mountain;
-      default: return this.prairie
+      default: return this.prairie;
     }
   }
 };

@@ -1,4 +1,6 @@
 import Swordsman from "../characters/Swordsman";
+import PositionedCharacter from "../PositionedCharacter";
+import {calculateDistance} from "../utils";
 
 describe('Должен создаваться персонаж Swordsman с правильными параметрами', () => {
     it('attack/defence: 10/40', () => {
@@ -9,26 +11,33 @@ describe('Должен создаваться персонаж Swordsman с пр
             health: 50,
             attack: 40,
             defence: 10,
+            move: 4,
+            attackDistance: 1,
         });
     });
 });
 
-// describe('Тестируем функции урона и повышения уровня', () => {
-//     it('урон здоровью зависит от защиты', () => {
-//         const swordsman = new Swordsman('Арагорн');
-//         swordsman.levelUp();
-//         swordsman.damage(50);
-//         expect(swordsman.health).toBe(56);
-//     });
-//
-//     it('при повышении уровня атака и защита увеличивается на 20%, а здоровье восстанавливается', () => {
-//         const swordsman = new Swordsman('Арагорн');
-//         swordsman.levelUp();
-//         swordsman.damage(70);
-//         swordsman.levelUp();
-//         expect(swordsman.level).toBe(3);
-//         expect(swordsman.health).toBe(100);
-//         expect(swordsman.attack).toBeCloseTo(57.6);
-//         expect(swordsman.defence).toBeCloseTo(14.4);
-//     });
-// });
+describe('Проверяем возможности хода и атаки персонажа Swordsman', () => {
+  const swordsman = new Swordsman(1);
+  const positionedSwordsman = new PositionedCharacter(swordsman, 19);
+
+  it('Swordsman может передвинуться на 4 клетки', () => {
+    const result = swordsman.move >= calculateDistance(positionedSwordsman.position, 54);
+    expect(result).toBeTruthy();
+  });
+
+  it('Swordsman НЕ может передвинуться на 5 клеток', () => {
+    const result = swordsman.move >= calculateDistance(positionedSwordsman.position, 62);
+    expect(result).toBeFalsy();
+  });
+
+  it('Swordsman может атаковать на 1 клетку', () => {
+    const result = swordsman.attackDistance >= calculateDistance(positionedSwordsman.position, 27);
+    expect(result).toBeTruthy();
+  });
+
+  it('Swordsman НЕ может атаковать на 2 клетки', () => {
+    const result = swordsman.attackDistance >= calculateDistance(positionedSwordsman.position, 21);
+    expect(result).toBeFalsy();
+  });
+});

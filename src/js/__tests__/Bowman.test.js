@@ -1,4 +1,6 @@
 import Bowman from "../characters/Bowman";
+import PositionedCharacter from "../PositionedCharacter";
+import {calculateDistance} from "../utils";
 
 describe('Должен создаваться персонаж Bowman с правильными параметрами', () => {
     it('attack/defence: 25/25', () => {
@@ -9,29 +11,33 @@ describe('Должен создаваться персонаж Bowman с пра�
             health: 50,
             attack: 25,
             defence: 25,
+            move: 2,
+            attackDistance: 2,
         });
     });
 });
 
-// describe('Тестируем функции урона и повышения уровня', () => {
-//     it('урон здоровью зависит от защиты', () => {
-//         const bowman = new Bowman('Легалас');
-//         bowman.damage(40);
-//         expect(bowman.health).toBe(70);
-//     });
-//
-//     it('при повышении уровня атака и защита увеличивается на 20%, а здоровье восстанавливается', () => {
-//         const bowman = new Bowman('Легалас');
-//         bowman.levelUp();
-//         bowman.damage(40);
-//         bowman.levelUp();
-//         expect(bowman).toEqual({
-//             name: 'Легалас',
-//             type: 'Bowman',
-//             level: 3,
-//             _health: 100,
-//             attack: 36,
-//             defence: 36,
-//         });
-//     });
-// });
+describe('Проверяем возможности хода и атаки персонажа Bowman', () => {
+  const bowman = new Bowman(1);
+  const positionedBowman = new PositionedCharacter(bowman, 9);
+
+  it('Bowman может передвинуться на 2 клетки', () => {
+    const result = bowman.move >= calculateDistance(positionedBowman.position, 11);
+    expect(result).toBeTruthy();
+  });
+
+  it('Bowman НЕ может передвинуться на 3 клетки', () => {
+    const result = bowman.move >= calculateDistance(positionedBowman.position, 12);
+    expect(result).toBeFalsy();
+  });
+
+  it('Bowman может атаковать на 2 клетки', () => {
+    const result = bowman.attackDistance >= calculateDistance(positionedBowman.position, 25);
+    expect(result).toBeTruthy();
+  });
+
+  it('Bowman НЕ может атаковать на 4 клетки', () => {
+    const result = bowman.attackDistance >= calculateDistance(positionedBowman.position, 41);
+    expect(result).toBeFalsy();
+  });
+});
